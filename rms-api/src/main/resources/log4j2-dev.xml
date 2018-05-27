@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+    <Properties>
+        <property name="LOG_HOME">/log</property>
+        <property name="FILE_NAME">api</property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="system_out">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%thread] %c [%L] -| %msg%n"/>
+        </Console>
+        <RollingRandomAccessFile name="DebugRollingFile"
+                                 fileName="${LOG_HOME}/${FILE_NAME}-debug.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyyMMddHHmmss}/${FILE_NAME}-debug-%d{yyyyMMdd}-%i.zip">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="ErrorRollingFile"
+                                 fileName="${LOG_HOME}/${FILE_NAME}-error.log"
+                                 filePattern="${LOG_HOME}/$${date:yyyyMMddHHmmss}/${FILE_NAME}-error-%d{yyyyMMdd}-%i.zip">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console" level="debug"/>
+            <AppenderRef ref="DebugRollingFile" level="debug"/>
+            <AppenderRef ref="ErrorRollingFile" level="error"/>
+        </Root>
+    </Loggers>
+</Configuration>

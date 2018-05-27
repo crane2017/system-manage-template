@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mksoft.shop.query.TSysAdminUserQuery">
+  <sql id="common_limit">
+    <if test="startRow != null and pageSize != null" >
+      limit #{startRow}, #{pageSize}
+    </if>
+  </sql>
+  <sql id="Base_Column_List">
+    admin_user_pkid,
+    admin_user_login,
+    admin_user_name,
+    admin_user_email,
+    warehouse_pkid,
+    start_date,
+    expire_date
+  </sql>
+  <sql id="search_user_condition">
+    where 1 = 1
+    AND ver = 0
+    <if test="admin_user_login != null and admin_user_login != ''" >
+      AND admin_user_login LIKE CONCAT('%',#{admin_user_login},'%')
+    </if>
+    <if test="adminUserLogin != null and adminUserLogin != ''" >
+      AND admin_user_login = #{adminUserLogin}
+    </if>
+    <if test="admin_user_name != null and admin_user_name != ''" >
+      AND admin_user_name LIKE CONCAT('%',#{admin_user_name},'%')
+    </if>
+  </sql>
+  <select id="search" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+    select
+    tau.admin_user_pkid,
+    tau.admin_user_login,
+    tau.admin_user_name,
+    tau.admin_user_email,
+    tau.start_date,
+    tau.expire_date,
+    taur.admin_role_pkid,
+    taur.admin_user_role_pkid,
+    tsaud.admin_user_dpt_pkid,
+    tsaud.admin_dpt_pkid
+    from t_sys_admin_user tau
+    LEFT JOIN t_sys_admin_user_role taur on tau.admin_user_pkid = taur.admin_user_pkid AND taur.ver = 0
+    LEFT JOIN t_sys_admin_user_dpt tsaud on tsaud.admin_user_pkid = tau.admin_user_pkid AND tsaud.ver = 0
+    where 1 = 1
+    AND tau.ver = 0
+    <if test="admin_user_login != null and admin_user_login != ''" >
+      AND tau.admin_user_login LIKE CONCAT('%',#{admin_user_login},'%')
+    </if>
+    <if test="adminUserLogin != null and adminUserLogin != ''" >
+      AND tau.admin_user_login = #{adminUserLogin}
+    </if>
+    <if test="admin_user_pkid != null and admin_user_pkid != ''" >
+      AND tau.admin_user_pkid = #{admin_user_pkid}
+    </if>
+    <if test="admin_user_name != null and admin_user_name != ''" >
+      AND tau.admin_user_name LIKE CONCAT('%',#{admin_user_name},'%')
+    </if>
+    <include refid="common_limit" />
+  </select>
+  <select id="count" resultType="java.lang.Integer">
+    select
+    count(*)
+    from t_sys_admin_user tau
+    where 1 = 1
+    AND tau.ver = 0
+    <if test="admin_user_login != null and admin_user_login != ''" >
+      AND tau.admin_user_login LIKE CONCAT('%',#{admin_user_login},'%')
+    </if>
+    <if test="adminUserLogin != null and adminUserLogin != ''" >
+      AND tau.admin_user_login = #{adminUserLogin}
+    </if>
+    <if test="admin_user_pkid != null and admin_user_pkid != ''" >
+      AND tau.admin_user_pkid = #{admin_user_pkid}
+    </if>
+    <if test="admin_user_name != null and admin_user_name != ''" >
+      AND tau.admin_user_name LIKE CONCAT('%',#{admin_user_name},'%')
+    </if>
+  </select>
+  <select id="isRoleExit" resultType="java.lang.Integer">
+    select
+    count(*)
+    from t_sys_admin_user_role
+    WHERE admin_user_pkid = #{admin_user_pkid}
+    AND admin_role_pkid = #{admin_role_pkid}
+  </select>
+
+  <select id="getLoginAdminUser" parameterType="java.util.Map" resultType="com.mksoft.shop.model.TSysAdminUser">
+    SELECT
+	admin_user_pkid,
+	admin_user_login,
+	admin_user_uuid,
+	admin_user_name,
+    admin_user_pwd,
+	admin_user_email
+    FROM
+	t_sys_admin_user tsau
+    WHERE
+      1=1
+      <if test="adminUserLogin != null and adminUserLogin != ''" >
+          and lower(tsau.admin_user_login) = lower(#{adminUserLogin})
+      </if>
+      <if test="adminUserPwd != null and adminUserPwd != ''" >
+          and tsau.admin_user_pwd = #{adminUserPwd}
+      </if>
+      and
+	(now( ) BETWEEN tsau.start_date
+	AND tsau.expire_date)
+	AND tsau.ver = 0
+  </select>
+</mapper>

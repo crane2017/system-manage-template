@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+    <Properties>
+        <!-- 文件输出格式 -->
+        <property name="ConsolePattern">%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%thread] %c [%L] -| %msg%n</property>
+    </Properties>
+
+    <appenders>
+        <Console name="Console" target="system_out">
+            <PatternLayout pattern="${ConsolePattern}"/>
+        </Console>
+    </appenders>
+
+    <Loggers>
+        <logger name="com.xinglian.qmall" level="debug"/>
+        <root level="debug">
+            <appenderRef ref="Console"/>
+        </root>
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,9 @@
+rms-admin/.gitignore
+rms-admin/.idea/
+rms-admin/node_modules/
+
+rms-api/.idea/
+rms-api/target
+rms-api/rms(dev)-api.iml
+rms-api/src/test/
+rms-api/src/main/java/com/mksoft/shop/model/

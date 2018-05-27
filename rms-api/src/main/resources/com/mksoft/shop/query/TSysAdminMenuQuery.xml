@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mksoft.shop.query.TSysAdminMenuQuery">
+    <sql id="Base_Column_List">
+    menu_pkid, title, `type`, url, parent_pkid, menu_class, menu_order, cid, cdt, uid, udt, note
+  </sql>
+	<resultMap id="BaseResultMap" type="java.util.LinkedHashMap">
+		<result column="menu_pkid" property="menuPkid"/>
+		<result column="parent_pkid" property="parentPkid"/>
+		<result column="menu_class" property="menuClass"/>
+		<result column="menu_order" property="menuOrder"/>
+	</resultMap>
+	<select id="list"  parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+		select
+		menu_pkid, parent_pkid, menu_class,title, `type`, url, menu_order,ver, cid, cdt, uid, udt, note
+		from t_sys_admin_menu
+		where 1 = 1
+		AND ver = 0
+
+		ORDER BY menu_order
+		<if test="startRow != null and pageSize != null" >
+			limit #{startRow}, #{pageSize}
+		</if>
+	</select>
+    <select id="search" parameterType="java.util.Map" resultType="com.mksoft.shop.query.model.TSysAdminMenuExt">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_admin_menu
+        where 1 = 1
+        and ver = 0
+    </select>
+
+    <select id="searchMenu" parameterType="java.util.Map" resultType="com.mksoft.shop.query.model.TSysAdminMenuExt">
+    SELECT
+	tam.*
+	FROM
+		(
+			SELECT
+				tama.menu_pkid
+			FROM
+				t_sys_admin_menu_auth tama
+			WHERE
+				tama.admin_role_pkid =(
+					SELECT
+						admin_role_pkid
+					FROM
+						t_sys_admin_user_role aur
+					WHERE
+						admin_user_pkid = #{adminUserPkid}
+						AND aur.ver = 0
+				)
+			AND tama.ver = 0
+		) ta
+	JOIN t_sys_admin_menu tam ON ta.menu_pkid = tam.menu_pkid
+	AND tam.ver = 0
+	ORDER BY tam.menu_order
+  </select>
+</mapper>

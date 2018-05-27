@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mksoft.shop.query.TSysAdminDepartmentQuery">
+    <sql id="Base_Column_List">
+    admin_dpt_pkid, dpt_parent_pkid, store_id, admin_dpt_key, admin_dpt_name,  cid, cdt, uid, udt, note
+  </sql>
+	<resultMap id="BaseResultMap" type="java.util.LinkedHashMap">
+		<result column="admin_dpt_pkid" property="adminDptPkid"/>
+		<result column="dpt_parent_pkid" property="dptParentPkid"/>
+		<result column="store_id" property="storeId"/>
+		<result column="admin_dpt_key" property="adminDptKey"/>
+		<result column="admin_dpt_name" property="adminDptName"/>
+	</resultMap>
+	<select id="list"  parameterType="java.util.Map" resultType="com.mksoft.shop.query.model.TSysAdminDepartmentExt">
+		select
+		admin_dpt_pkid, dpt_parent_pkid, store_id, admin_dpt_key, admin_dpt_name,ver, cid, cdt, uid, udt, note, admin_dpt_pkid as value, admin_dpt_name as label
+		from t_sys_admin_department
+		where 1 = 1
+		AND ver = 0
+
+		ORDER BY admin_dpt_pkid
+		<if test="startRow != null and pageSize != null" >
+			limit #{startRow}, #{pageSize}
+		</if>
+	</select>
+    <select id="search" parameterType="java.util.Map" resultType="java.util.LinkedHashMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_admin_department
+        where 1 = 1
+        and ver = 0
+    </select>
+
+</mapper>
